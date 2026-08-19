@@ -18,7 +18,8 @@ SkillBoost is a parameter-free framework for continuously improving the external
 SkillBoost reframes skill evolution as a **constrained search problem** governed by an exploration-exploitation trade-off. Each round localizes failures to editable skill components, explores multiple repair strategies, and commits only candidates that produce verified net improvement under a regression bound.
 
 <p align="center">
-  <img src="docs/assets/skill-overfitting.png" width="700" alt="SkillBoost improves performance while maintaining a near-zero generalization gap." />
+  <a href="docs/assets/skill-overfitting.pdf"><strong>Figure 1 — Skill overfitting and generalization (PDF)</strong></a><br />
+  <sub>Original vector figure from the paper source</sub>
 </p>
 
 ## Framework
@@ -30,7 +31,8 @@ Given a versioned skill state \(s_t\), a frozen agent first performs a forward r
 3. **Verified Acceptance** evaluates candidate skills and commits only the highest-gain candidate satisfying the anti-regression constraint.
 
 <p align="center">
-  <img src="docs/assets/skillboost-framework.png" width="100%" alt="The SkillBoost framework: structured exploitation, prior-guided exploration, and verified acceptance." />
+  <a href="docs/assets/skillboost-framework.pdf"><strong>Figure 2 — SkillBoost framework (PDF)</strong></a><br />
+  <sub>Structured exploitation, prior-guided exploration, and verified acceptance</sub>
 </p>
 
 For candidate \(s'\), the paper defines
@@ -62,7 +64,8 @@ If no candidate passes the gate, the state is unchanged: \(s_{t+1}=s_t\). This m
 The Best-of-\(N\) analysis predicts diminishing returns proportional to \(\sqrt{\ln N}\). Experiments confirm that accuracy gains saturate after \(N=4\), while evaluation cost continues to rise. The paper therefore uses **Best-of-4** with **Top-2 full evaluation** as its default.
 
 <p align="center">
-  <img src="docs/assets/best-of-n.png" width="760" alt="Best-of-N accuracy and cost trade-off on SpreadsheetBench and ALFWorld." />
+  <a href="docs/assets/best-of-n.pdf"><strong>Best-of-N accuracy-cost analysis (PDF)</strong></a><br />
+  <sub>Original vector figure from the paper source</sub>
 </p>
 
 ## Repository structure
@@ -211,4 +214,4 @@ SkillBoost evolves external procedural skills; it does not update model weights.
 
 Please cite the paper through its [arXiv record](https://arxiv.org/abs/2607.26643), which provides the authoritative BibTeX metadata.
 
-The figures embedded above are rendered from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
+The vector figures linked above come from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
