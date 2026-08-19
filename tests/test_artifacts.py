@@ -9,14 +9,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ArtifactTests(unittest.TestCase):
-    def test_paper_figures_are_original_pdf_assets(self) -> None:
+    def test_paper_figures_are_embeddable_svg_assets(self) -> None:
         asset_dir = ROOT / "docs" / "assets"
         stems = {"skill-overfitting", "skillboost-framework", "best-of-n"}
         for stem in stems:
-            pdf = asset_dir / f"{stem}.pdf"
-            self.assertTrue(pdf.is_file(), pdf)
-            self.assertEqual(pdf.read_bytes()[:5], b"%PDF-", pdf)
+            svg = asset_dir / f"{stem}.svg"
+            self.assertTrue(svg.is_file(), svg)
+            self.assertIn(b"<svg", svg.read_bytes()[:1024], svg)
             self.assertFalse((asset_dir / f"{stem}.png").exists(), stem)
+            self.assertFalse((asset_dir / f"{stem}.pdf").exists(), stem)
 
     def test_schemas_are_valid_json_and_have_version(self) -> None:
         for path in sorted((ROOT / "schemas").glob("*.schema.json")):

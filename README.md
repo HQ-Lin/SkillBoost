@@ -1,8 +1,8 @@
 <div align="center">
 
-# SkillBoost
+# Rethinking Self-Evolution: A Constrained Exploration-Exploitation Process for Mitigating Skill Overfitting
 
-### Evidence-Guided, Regression-Aware Skill Self-Evolution
+### SkillBoost
 
 [![arXiv](https://img.shields.io/badge/arXiv-2607.26643-b31b1b?style=flat-square&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2607.26643)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
@@ -20,8 +20,7 @@ SkillBoost is a parameter-free framework for continuously improving the external
 SkillBoost reframes skill evolution as a **constrained search problem** governed by an exploration-exploitation trade-off. Each round localizes failures to editable skill components, explores multiple repair strategies, and commits only candidates that produce verified net improvement under a regression bound.
 
 <p align="center">
-  <a href="docs/assets/skill-overfitting.pdf"><strong>Figure 1 — Skill overfitting and generalization (PDF)</strong></a><br />
-  <sub>Original vector figure from the paper source</sub>
+  <img src="docs/assets/skill-overfitting.svg" width="700" alt="SkillBoost improves performance while maintaining a near-zero generalization gap." />
 </p>
 
 ## Framework
@@ -33,8 +32,7 @@ Given a versioned skill, a frozen agent first performs a forward rollout over a 
 3. **Verified Acceptance** evaluates candidate skills and commits only the highest-gain candidate satisfying the anti-regression constraint.
 
 <p align="center">
-  <a href="docs/assets/skillboost-framework.pdf"><strong>Figure 2 — SkillBoost framework (PDF)</strong></a><br />
-  <sub>Structured exploitation, prior-guided exploration, and verified acceptance</sub>
+  <img src="docs/assets/skillboost-framework.svg" width="100%" alt="The SkillBoost framework: structured exploitation, prior-guided exploration, and verified acceptance." />
 </p>
 
 Candidate quality is measured by its full-set score gain over the incumbent skill, together with the rates of repaired and regressed cases. A candidate is eligible only when it produces a positive net gain and keeps regression below the configured bound. If no candidate passes this gate, the incumbent is retained. Non-update is therefore a valid outcome rather than forcing every round to absorb batch-specific rules.
@@ -54,8 +52,7 @@ Candidate quality is measured by its full-set score gain over the incumbent skil
 The Best-of-N analysis predicts sublinear, diminishing returns as the candidate pool grows. Experiments confirm that accuracy gains saturate after four candidates, while evaluation cost continues to rise. The paper therefore uses **Best-of-4** with **Top-2 full evaluation** as its default.
 
 <p align="center">
-  <a href="docs/assets/best-of-n.pdf"><strong>Best-of-N accuracy-cost analysis (PDF)</strong></a><br />
-  <sub>Original vector figure from the paper source</sub>
+  <img src="docs/assets/best-of-n.svg" width="760" alt="Best-of-N accuracy and cost trade-off on SpreadsheetBench and ALFWorld." />
 </p>
 
 ## Repository structure
@@ -204,4 +201,4 @@ SkillBoost evolves external procedural skills; it does not update model weights.
 
 Please use the authoritative BibTeX metadata from the arXiv record linked by the badge at the top of this page.
 
-The vector figures linked above come from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
+The vector figures embedded above are derived from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
