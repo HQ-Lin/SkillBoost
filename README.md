@@ -7,9 +7,6 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2607.26643-b31b1b?style=flat-square&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2607.26643)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-34%20passing-2ea44f?style=flat-square&logo=githubactions&logoColor=white)](tests/)
-
-[Method](docs/method.md) · [Implementation](docs/implementation.md) · [Reproduction](docs/reproducibility.md)
 
 </div>
 
