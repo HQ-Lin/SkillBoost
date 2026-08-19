@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillboost.dev/schemas/evolution-record.schema.json",
+  "title": "SkillBoost Evolution Record",
+  "type": "object",
+  "required": [
+    "schema_version", "round_id", "incumbent", "brief_id", "gates",
+    "candidates", "decision", "created_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "round_id": {"type": "string", "minLength": 1},
+    "incumbent": {"type": "string", "minLength": 1},
+    "brief_id": {"type": "string", "minLength": 1},
+    "gates": {
+      "type": "object",
+      "required": ["min_improvement", "max_case_regression", "max_slice_regression", "min_completion"],
+      "properties": {
+        "min_improvement": {"type": "number"},
+        "max_case_regression": {"type": ["number", "null"], "minimum": 0},
+        "max_slice_regression": {"type": "number", "minimum": 0},
+        "min_completion": {"type": "number", "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": true
+    },
+    "candidates": {"type": "array", "items": {"type": "object"}},
+    "decision": {
+      "type": "object",
+      "required": ["status", "reasons"],
+      "properties": {
+        "status": {"enum": ["promoted", "rejected"]},
+        "winner": {"type": ["string", "null"]},
+        "reasons": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillboost.dev/schemas/repair-brief.schema.json",
+  "title": "SkillBoost Repair Brief",
+  "description": "Paper-aligned eight-module artifact b_t^(n) = (g_t, pi^(n)).",
+  "type": "object",
+  "required": [
+    "schema_version", "brief_id", "diagnosis_id", "strategy_id", "candidate_id", "status",
+    "metadata", "baseline_performance", "failure_clusters", "repair_strategy",
+    "action_mapping", "anti_regression_guardrails", "back_testing", "execution_plan"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "brief_id": {"type": "string", "minLength": 1},
+    "diagnosis_id": {"type": "string", "minLength": 1},
+    "strategy_id": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["draft", "evaluated", "accepted", "rejected"]},
+    "metadata": {
+      "type": "object",
+      "required": ["source_skill", "source_run", "dataset_id", "split"],
+      "properties": {
+        "source_skill": {"$ref": "diagnosis.schema.json#/$defs/skillIdentity"},
+        "source_run": {"type": "string", "minLength": 1},
+        "dataset_id": {"type": "string", "minLength": 1},
+        "split": {"type": "string", "minLength": 1},
+        "model_config_ref": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "baseline_performance": {"$ref": "diagnosis.schema.json#/$defs/performanceSummary"},
+    "failure_clusters": {
+      "type": "array",
+      "items": {"$ref": "diagnosis.schema.json#/$defs/failureCluster"},
+      "minItems": 1
+    },
+    "repair_strategy": {
+      "type": "object",
+      "required": [
+        "thesis", "selected_cluster_ids", "priority", "edit_scope",
+        "causal_hypothesis", "distinguishing_feature", "actions"
+      ],
+      "properties": {
+        "thesis": {"type": "string", "minLength": 1},
+        "selected_cluster_ids": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^C-[0-9]{3,}$"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "priority": {"type": "string", "minLength": 1},
+        "edit_scope": {"enum": ["narrow", "wider", "decomposition"]},
+        "causal_hypothesis": {"type": "string", "minLength": 1},
+        "distinguishing_feature": {"type": "string", "minLength": 1},
+        "actions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/repairAction"},
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "action_mapping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cluster_id", "action_id", "skill_location", "expected_effect"],
+        "properties": {
+          "cluster_id": {"type": "string", "pattern": "^C-[0-9]{3,}$"},
+          "action_id": {"type": "string", "pattern": "^A-[0-9]{3,}$"},
+          "skill_location": {"type": "string", "minLength": 1},
+          "expected_effect": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "anti_regression_guardrails": {
+      "type": "object",
+      "required": ["protected_behaviors", "gates", "mutation_budget"],
+      "properties": {
+        "protected_behaviors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "measurement", "minimum_acceptable"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "measurement": {"type": "string", "minLength": 1},
+              "baseline": {"type": "number"},
+              "minimum_acceptable": {"type": "number"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "gates": {
+          "type": "object",
+          "required": ["min_improvement", "max_case_regression", "max_slice_regression", "min_completion"],
+          "properties": {
+            "min_improvement": {"type": "number"},
+            "max_case_regression": {"type": "number", "minimum": 0},
+            "max_slice_regression": {"type": "number", "minimum": 0},
+            "min_completion": {"type": "number", "minimum": 0, "maximum": 1}
+          },
+          "additionalProperties": false
+        },
+        "mutation_budget": {
+          "type": "object",
+          "required": ["max_changed_lines", "max_skill_growth_ratio"],
+          "properties": {
+            "max_changed_lines": {"type": "integer", "minimum": 1},
+            "max_skill_growth_ratio": {"type": "number", "minimum": 0}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "back_testing": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["pending", "complete", "failed"]},
+        "targeted_report": {"type": "string", "minLength": 1},
+        "full_report": {"type": "string", "minLength": 1},
+        "repaired_case_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "regressed_case_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "gate_results": {"type": "object", "additionalProperties": {"type": "boolean"}}
+      },
+      "additionalProperties": false
+    },
+    "execution_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "owner", "status"],
+        "properties": {
+          "step": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "status": {"enum": ["pending", "complete", "failed", "accepted", "rejected"]},
+          "evidence_artifact": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "repairAction": {
+      "type": "object",
+      "required": [
+        "id", "cluster_ids", "operator", "target", "proposed_edit",
+        "applicability", "non_applicability", "expected_effect", "falsification_check"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^A-[0-9]{3,}$"},
+        "cluster_ids": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^C-[0-9]{3,}$"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "operator": {"enum": ["ADD", "REFINE", "REORDER", "PRUNE", "DECOMPOSE"]},
+        "target": {"type": "string", "minLength": 1},
+        "proposed_edit": {"type": "string", "minLength": 1},
+        "applicability": {"type": "string", "minLength": 1},
+        "non_applicability": {"type": "string", "minLength": 1},
+        "expected_effect": {"type": "string", "minLength": 1},
+        "falsification_check": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

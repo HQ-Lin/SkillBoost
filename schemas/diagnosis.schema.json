@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillboost.dev/schemas/diagnosis.schema.json",
+  "title": "SkillBoost Shared Diagnosis",
+  "type": "object",
+  "required": [
+    "schema_version", "diagnosis_id", "round_id", "source_run",
+    "parent_skill", "metadata", "baseline_performance", "failure_clusters",
+    "quarantined_cases", "unresolved_hypotheses", "fixed_screen_case_ids"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "diagnosis_id": {"type": "string", "minLength": 1},
+    "round_id": {"type": "string", "minLength": 1},
+    "source_run": {"type": "string", "minLength": 1},
+    "parent_skill": {"$ref": "#/$defs/skillIdentity"},
+    "metadata": {
+      "type": "object",
+      "required": ["dataset_id", "split", "primary_metric", "metric_direction", "trace_coverage"],
+      "properties": {
+        "dataset_id": {"type": "string", "minLength": 1},
+        "split": {"type": "string", "minLength": 1},
+        "primary_metric": {"type": "string", "minLength": 1},
+        "metric_direction": {"enum": ["maximize", "minimize"]},
+        "trace_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "model_config_ref": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "baseline_performance": {"$ref": "#/$defs/performanceSummary"},
+    "failure_clusters": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/failureCluster"},
+      "minItems": 1
+    },
+    "quarantined_cases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/quarantinedCase"}
+    },
+    "unresolved_hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hypothesis", "missing_evidence", "resolution_test"],
+        "properties": {
+          "hypothesis": {"type": "string", "minLength": 1},
+          "missing_evidence": {"type": "string", "minLength": 1},
+          "resolution_test": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "fixed_screen_case_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "protected_slices": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "candidate_independent_constraints": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "skillIdentity": {
+      "type": "object",
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "performanceSummary": {
+      "type": "object",
+      "required": ["metrics", "total", "decided", "missing", "unknown"],
+      "properties": {
+        "metrics": {"type": "object", "additionalProperties": {"type": "number"}},
+        "total": {"type": "integer", "minimum": 0},
+        "decided": {"type": "integer", "minimum": 0},
+        "missing": {"type": "integer", "minimum": 0},
+        "unknown": {"type": "integer", "minimum": 0},
+        "slice_metrics": {
+          "type": "object",
+          "additionalProperties": {"type": "object", "additionalProperties": {"type": "number"}}
+        },
+        "observation": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "failureCluster": {
+      "type": "object",
+      "required": [
+        "id", "title", "case_ids", "defect_class", "earliest_causal_error",
+        "skill_location", "evidence", "root_cause", "counterfactual",
+        "confidence", "disposition"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^C-[0-9]{3,}$"},
+        "title": {"type": "string", "minLength": 1},
+        "case_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "defect_class": {
+          "enum": [
+            "missing_strategy", "ambiguous_strategy", "overbroad_strategy",
+            "broken_control_flow", "knowledge_gap", "output_contract", "capability_gap"
+          ]
+        },
+        "earliest_causal_error": {"type": "string", "minLength": 1},
+        "skill_location": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "root_cause": {"type": "string", "minLength": 1},
+        "counterfactual": {"type": "string", "minLength": 1},
+        "competing_hypothesis": {"type": ["string", "null"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "disposition": {"enum": ["repair", "decompose", "rerun", "adjudicate"]}
+      },
+      "additionalProperties": false
+    },
+    "quarantinedCase": {
+      "type": "object",
+      "required": ["case_id", "reason", "evidence", "next_action"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "reason": {"enum": ["engineering_anomaly", "label_issue"]},
+        "evidence": {"type": "string", "minLength": 1},
+        "next_action": {"enum": ["rerun", "adjudicate"]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

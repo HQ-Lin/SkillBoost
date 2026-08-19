@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillboost.dev/schemas/evaluation-report.schema.json",
+  "title": "SkillBoost Evaluation Report",
+  "type": "object",
+  "required": [
+    "schema_version", "run_id", "skill_version", "dataset_id",
+    "primary_metric", "metric_direction", "metrics", "total",
+    "decided", "missing", "unknown", "correct_cases", "incorrect_cases"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {"type": "string", "minLength": 1},
+    "skill_version": {"type": "string", "minLength": 1},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "primary_metric": {"type": "string", "minLength": 1},
+    "metric_direction": {"enum": ["maximize", "minimize"]},
+    "metrics": {
+      "type": "object",
+      "additionalProperties": {"type": "number"}
+    },
+    "total": {"type": "integer", "minimum": 0},
+    "decided": {"type": "integer", "minimum": 0},
+    "missing": {"type": "integer", "minimum": 0},
+    "unknown": {"type": "integer", "minimum": 0},
+    "incorrect_cases": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "correct_cases": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "undecided_cases": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "slice_metrics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {"type": "number"}
+      }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {"type": "integer", "minimum": 0},
+        "output_tokens": {"type": "integer", "minimum": 0},
+        "wall_time_seconds": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "config": {"type": "object"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

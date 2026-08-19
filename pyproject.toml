@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skillboost"
+version = "0.1.0"
+description = "Evidence-guided, regression-aware self-evolution for agent skills"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+skillboost-evolve = "skillboost.evolve:main"
+skillboost-orchestrate = "skillboost.orchestrate:main"
+
+[project.optional-dependencies]
+bfcl = ["bfcl-eval==2026.3.23"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
