@@ -202,6 +202,6 @@ SkillBoost evolves external procedural skills; it does not update model weights.
 
 ## Citation
 
-Please cite the paper through its [arXiv record](https://arxiv.org/abs/2607.26643), which provides the authoritative BibTeX metadata.
+Please use the authoritative BibTeX metadata from the arXiv record linked by the badge at the top of this page.
 
 The vector figures linked above come from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
