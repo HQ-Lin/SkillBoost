@@ -26,10 +26,10 @@ SkillBoost reframes skill evolution as a **constrained search problem** governed
 
 ## Framework
 
-Given a versioned skill state $s_t$, a frozen agent first performs a forward rollout over a task batch. Backward optimization then applies three stages:
+Given a versioned skill, a frozen agent first performs a forward rollout over a task batch. Backward optimization then applies three stages:
 
 1. **Structured Exploitation** reconstructs failed trajectories, checks workflow compliance, finds the first causal deviation, clusters shared root causes, and maps each cluster to an editable skill component.
-2. **Prior-guided Exploration** keeps the evidence-grounded diagnosis fixed while generating $N$ candidates under diverse repair strategies, ranging from conservative edits to prior-extended repairs.
+2. **Prior-guided Exploration** keeps the evidence-grounded diagnosis fixed while generating multiple candidates under diverse repair strategies, ranging from conservative edits to prior-extended repairs.
 3. **Verified Acceptance** evaluates candidate skills and commits only the highest-gain candidate satisfying the anti-regression constraint.
 
 <p align="center">
@@ -37,19 +37,7 @@ Given a versioned skill state $s_t$, a frozen agent first performs a forward rol
   <sub>Structured exploitation, prior-guided exploration, and verified acceptance</sub>
 </p>
 
-For candidate $s'$, the paper defines
-
-$$
-r(s') = \operatorname{Eval}(s',\mathcal D)-\operatorname{Eval}(s_t,\mathcal D),
-$$
-
-with case-level repair and regression rates $\operatorname{Fix}(s')$ and $\operatorname{Regress}(s')$. Acceptance is constrained by
-
-$$
-\operatorname{Accept}(s') \iff r(s')>0 \;\land\; \operatorname{Regress}(s')<\epsilon.
-$$
-
-If no candidate passes the gate, the state is unchanged: $s_{t+1}=s_t$. This makes non-update a valid outcome rather than forcing every round to absorb batch-specific rules.
+Candidate quality is measured by its full-set score gain over the incumbent skill, together with the rates of repaired and regressed cases. A candidate is eligible only when it produces a positive net gain and keeps regression below the configured bound. If no candidate passes this gate, the incumbent is retained. Non-update is therefore a valid outcome rather than forcing every round to absorb batch-specific rules.
 
 ## Main findings reported in the paper
 
@@ -63,7 +51,7 @@ If no candidate passes the gate, the state is unchanged: $s_{t+1}=s_t$. This mak
 | Transfer | Evolved skills transfer across model families and from LiveMath to OlympiadBench |
 | Efficiency | 13.9% fewer inference tokens per case on average than SkillOpt at deployment |
 
-The Best-of-$N$ analysis predicts diminishing returns proportional to $\sqrt{\ln N}$. Experiments confirm that accuracy gains saturate after $N=4$, while evaluation cost continues to rise. The paper therefore uses **Best-of-4** with **Top-2 full evaluation** as its default.
+The Best-of-N analysis predicts sublinear, diminishing returns as the candidate pool grows. Experiments confirm that accuracy gains saturate after four candidates, while evaluation cost continues to rise. The paper therefore uses **Best-of-4** with **Top-2 full evaluation** as its default.
 
 <p align="center">
   <a href="docs/assets/best-of-n.pdf"><strong>Best-of-N accuracy-cost analysis (PDF)</strong></a><br />
@@ -202,8 +190,8 @@ Benchmark adapters have task-specific dependencies and may require external data
 SkillBoost keeps the model-mediated decisions inspectable through four explicit artifacts:
 
 - **Evaluation Report** records task performance, completion, correct/incorrect case IDs, slices, and cost.
-- **Shared Diagnosis** $g_t$ freezes evidence, causal failure clusters, and the screening set for one round.
-- **Repair Brief** $b_t^{(n)}=(g_t,\pi^{(n)})$ pairs that invariant diagnosis with one candidate-specific repair strategy in the paper's eight-module format.
+- **Shared Diagnosis** freezes evidence, causal failure clusters, and the screening set for one round.
+- **Repair Brief** pairs that invariant diagnosis with one candidate-specific repair strategy in the paper's eight-module format.
 - **Evolution Record** stores candidate reports, acceptance gates, the selected winner, or the reason the incumbent was retained.
 
 Their machine-readable definitions live in [`schemas/`](schemas/).
