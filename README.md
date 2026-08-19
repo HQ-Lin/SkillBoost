@@ -2,7 +2,6 @@
 
 # Rethinking Self-Evolution: A Constrained Exploration-Exploitation Process for Mitigating Skill Overfitting
 
-### SkillBoost
 
 [![arXiv](https://img.shields.io/badge/arXiv-2607.26643-b31b1b?style=flat-square&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2607.26643)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
@@ -68,8 +67,6 @@ SkillBoost/
 ├── analysis/                  Paper analysis and plotting utilities
 └── tests/                     Offline tests for core invariants
 ```
-
-The implementation-to-paper mapping is documented in [docs/implementation.md](docs/implementation.md).
 
 ## Quick start
 
@@ -177,7 +174,7 @@ python3 -m skillboost.orchestrate \
   --promote-to outputs/livemath-solver/v1
 ```
 
-Benchmark adapters have task-specific dependencies and may require external datasets, execution environments, or model access. See [docs/reproducibility.md](docs/reproducibility.md) before running experiments.
+Benchmark adapters have task-specific dependencies and may require external datasets, execution environments, or model access.
 
 ## Core artifacts
 
@@ -196,6 +193,9 @@ SkillBoost evolves external procedural skills; it does not update model weights.
 
 ## Citation
 
-Please use the authoritative BibTeX metadata from the arXiv record linked by the badge at the top of this page.
-
-The vector figures embedded above are derived from the paper's official arXiv source and retain the paper's [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attribution terms. See [docs/assets/README.md](docs/assets/README.md).
+@article{lin2026rethinking,
+  title={Rethinking Self-Evolution: A Constrained Exploration-Exploitation Process for Mitigating Skill Overfitting},
+  author={Lin, Hongqiang and Liu, Chao and Bai, Xiaofan and Jin, Xuan and Li, Yuhong and Zheng, Nenggan and Cao, Xipeng},
+  journal={arXiv preprint arXiv:2607.26643},
+  year={2026}
+}
